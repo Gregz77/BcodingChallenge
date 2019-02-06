@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BCodingChallenge</string>
+    <string name="textview">TextView</string>
+    <string name="username">username</string>
+    <string name="name_of_user">name_of_user</string>
+    <string name="album_title">Album Title</string>
 </resources>

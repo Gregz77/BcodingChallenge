@@ -26,6 +26,10 @@ class AlbumsActivity : AppCompatActivity() {
 
         usersRecView.layoutManager = LinearLayoutManager(this)
         usersRecView.adapter = AlbumsAdapter()
+
+        //change toolbar title
+        val toolbarTitle = intent.getStringExtra(CustomViewHolder.USERNAME_KEY)
+        supportActionBar?.title = toolbarTitle
     }
 
     private class AlbumsAdapter: RecyclerView.Adapter<AlbumsViewHolder>() {
@@ -34,7 +38,7 @@ class AlbumsActivity : AppCompatActivity() {
 
         //counts elements in array/list
         override fun getItemCount(): Int {
-            return albums.size
+            return albums.count()
         }
 
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AlbumsViewHolder {

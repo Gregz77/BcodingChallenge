@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.*
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,23 +23,41 @@ class MainActivity : AppCompatActivity() {
         //display back button
         //supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-            val users = ArrayList<String>()
-            users.add("{name\": \"Leanne Graham\",\n" +
-                    "    \"username\": \"Bret\",}")
-            users.add("{name\": \"Ervin Howell\",\n" +
-                    "    \"username\": \"Antonette\"}")
-
 
         usersRecView.layoutManager = LinearLayoutManager(this)
-        usersRecView.adapter = MainAdapter()
+        //usersRecView.adapter = MainAdapter()
 
-        //getUsers()
-        }
+        //fetchJson()
+        getUsers()
+    }
 
-    /*fun getUsers(){
+    fun getUsers() {
 
         val url = "https://jsonplaceholder.typicode.com/users"
 
-    }*/
+        val request = Request.Builder().url(url).build()
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object: Callback {
+
+            override fun onResponse(call: Call?, response: Response?) {
+                val body = response?.body()?.string()
+                println(body)
+
+                val gson = GsonBuilder().create()
+                val userFeed = gson.fromJson(body, Array<User>::class.java)
+                runOnUiThread {
+                    usersRecView.adapter = MainAdapter(userFeed)
+                }
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                println("Failed to execute request")
+            }
+
+        })
+
+
 
     }
+
+}

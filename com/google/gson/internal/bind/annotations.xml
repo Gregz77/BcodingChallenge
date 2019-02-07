@@ -1,0 +1,5 @@
+<root>
+    <item name='com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.Adapter void write(com.google.gson.stream.JsonWriter, T)'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

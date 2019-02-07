@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         getUsers()
     }
 
-    fun getUsers() {
+    private fun getUsers() {
 
         val url = "https://jsonplaceholder.typicode.com/users"
 
@@ -53,11 +53,6 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
                 println("Failed to execute request")
             }
-
         })
-
-
-
     }
-
 }

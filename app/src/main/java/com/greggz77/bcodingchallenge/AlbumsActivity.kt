@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.albums_list.view.*
 import okhttp3.*
@@ -17,10 +18,12 @@ import java.io.IOException
 
 class AlbumsActivity : AppCompatActivity() {
 
+    var photosFeed: Array<Photos>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
+
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -41,6 +44,7 @@ class AlbumsActivity : AppCompatActivity() {
     private fun getAlbums() {
 
         val albumsUrl = "https://jsonplaceholder.typicode.com/albums"
+        val idOfUser = intent.getIntExtra(CustomViewHolder.USER_ID_KEY, -1)
 
         val request = Request.Builder().url(albumsUrl).build()
         val client = OkHttpClient()
@@ -52,8 +56,18 @@ class AlbumsActivity : AppCompatActivity() {
 
                 val gson = GsonBuilder().create()
                 val albumFeed = gson.fromJson(body, Array<Album>::class.java)
+
+                val albumsForUser: MutableList<Album> = arrayListOf<Album>()
+                for (album in albumFeed) {
+                    if (album.userId == idOfUser){
+                        albumsForUser.add(album)
+                    }
+                }
+
+
+
                 runOnUiThread {
-                    usersRecView.adapter = AlbumsAdapter(albumFeed)
+                    usersRecView.adapter = AlbumsAdapter(albumsForUser)
                 }
             }
 
@@ -66,9 +80,33 @@ class AlbumsActivity : AppCompatActivity() {
 
 
     }
-    
 
-    private class AlbumsAdapter(val albumFeed: Array<Album>): RecyclerView.Adapter<AlbumsViewHolder>() {
+    private fun getPhotos() {
+
+        val photosUrl = "https://jsonplaceholder.typicode.com/photos"
+
+        val request = Request.Builder().url(photosUrl).build()
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object: Callback {
+
+            override fun onResponse(call: Call?, response: Response?) {
+                val body = response?.body()?.string()
+                println(body)
+
+                val gson = GsonBuilder().create()
+                photosFeed = gson.fromJson(body, Array<Photos>::class.java)
+
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                println("Failed to execute request")
+            }
+
+        })
+    }
+
+
+    private class AlbumsAdapter(val albumFeed: MutableList<Album>): RecyclerView.Adapter<AlbumsViewHolder>() {
 
         //val albums = listOf("čsdlkmčsngfn", "sldnfslglfgndffdč", "qšppefsdbvgfmdcv", "eegeogundfmngdfjpi")
 
@@ -88,6 +126,9 @@ class AlbumsActivity : AppCompatActivity() {
             p0.itemView.albumText?.text = albums.title
 
             p0.album = albums
+
+            val thumbAlbumView = p0.itemView.albumThumb
+            Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(thumbAlbumView)
 
         }
     }

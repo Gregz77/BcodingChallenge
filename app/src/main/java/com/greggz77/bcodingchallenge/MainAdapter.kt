@@ -32,6 +32,7 @@ class MainAdapter(val userFeed: Array<User>): RecyclerView.Adapter<CustomViewHol
 
         p0.user = users
 
+
     }
 }
 

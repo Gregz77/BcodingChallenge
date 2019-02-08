@@ -23,11 +23,8 @@ class MainActivity : AppCompatActivity() {
         //display back button
         //supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
+        RecView.layoutManager = LinearLayoutManager(this)
 
-        usersRecView.layoutManager = LinearLayoutManager(this)
-        //usersRecView.adapter = MainAdapter()
-
-        //fetchJson()
         getUsers()
     }
 
@@ -41,12 +38,12 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call?, response: Response?) {
                 val body = response?.body()?.string()
-                println(body)
+                //println(body)
 
                 val gson = GsonBuilder().create()
                 val userFeed = gson.fromJson(body, Array<User>::class.java)
                 runOnUiThread {
-                    usersRecView.adapter = MainAdapter(userFeed)
+                    RecView.adapter = MainAdapter(userFeed)
                 }
             }
 

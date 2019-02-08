@@ -29,11 +29,21 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".GridActivity">
+        <activity android:name=".GridActivity"
+                  android:launchMode="singleTop">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".AlbumsActivity"/>
         </activity>
-    </application>
+        <activity
+                android:name=".PhotoActivity"
+                android:label="PhotoView"
+                android:launchMode="singleTop">
+                <!--android:parentActivityName=".GridActivity"-->
 
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GridActivity"/>
+        </activity>
+    </application>
 </manifest>

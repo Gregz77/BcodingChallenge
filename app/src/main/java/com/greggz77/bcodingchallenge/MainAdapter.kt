@@ -10,8 +10,6 @@ import kotlinx.android.synthetic.main.users_list.view.*
 class MainAdapter(val userFeed: Array<User>): RecyclerView.Adapter<CustomViewHolder>() {
 
 
-    //val users = listOf("dfjlgfdl", "dflgdlfd", "oldrgdlogfd", "lsfdgnlsfdgnlk")
-
     //counts elements in array/list
     override fun getItemCount(): Int {
         return   userFeed.count()
@@ -26,11 +24,11 @@ class MainAdapter(val userFeed: Array<User>): RecyclerView.Adapter<CustomViewHol
 
     override fun onBindViewHolder(p0: CustomViewHolder, p1: Int) {
         //val userName = users.get(p1)
-        val users = userFeed.get(p1)
-        p0.view.usernameText?.text = users.username
-        p0.view.nameText?.text = users.name
+        val user = userFeed.get(p1)
+        p0.view.usernameText?.text = user.username
+        p0.view.nameText?.text = user.name
 
-        p0.user = users
+        p0.user = user
 
 
     }
@@ -41,6 +39,7 @@ class CustomViewHolder(val view: View, var user: User? = null): RecyclerView.Vie
     companion object {
         val USERNAME_KEY = "USERNAME"
         val USER_ID_KEY = "USER_ID"
+        val USER_NAME_KEY = "USER_NAME"
     }
 
     init {
@@ -50,6 +49,7 @@ class CustomViewHolder(val view: View, var user: User? = null): RecyclerView.Vie
 
             intent.putExtra(USERNAME_KEY, user?.username)
             intent.putExtra(USER_ID_KEY, user?.id)
+            intent.putExtra(USER_NAME_KEY, user?.name)
 
             view.context.startActivity(intent)
         }

@@ -33,8 +33,7 @@
             android:id="@+id/line"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@android:color/black" app:layout_constraintEnd_toEndOf="parent"
-    />
+            android:background="@android:color/black" app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

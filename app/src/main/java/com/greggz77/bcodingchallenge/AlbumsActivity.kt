@@ -19,11 +19,11 @@ import java.io.IOException
 class AlbumsActivity : AppCompatActivity() {
 
     var photosFeed: MutableList<Photo>? = null
+    var userName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -35,6 +35,7 @@ class AlbumsActivity : AppCompatActivity() {
         //change toolbar title
         val toolbarTitle = intent.getStringExtra(CustomViewHolder.USERNAME_KEY)
         supportActionBar?.title = toolbarTitle
+        userName = intent.getStringExtra(CustomViewHolder.USER_NAME_KEY)
 
         getPhotos()
     }
@@ -61,7 +62,7 @@ class AlbumsActivity : AppCompatActivity() {
                 }
 
                 runOnUiThread {
-                    RecView.adapter = AlbumsAdapter(albumsForUser, photosFeed = photosFeed)//fix this
+                    RecView.adapter = AlbumsAdapter(albumsForUser, photosFeed = photosFeed, userName = userName)
                 }
             }
 
@@ -96,7 +97,7 @@ class AlbumsActivity : AppCompatActivity() {
         })
     }
 
-   private class AlbumsAdapter(val albumFeed: MutableList<Album>, val photosFeed: MutableList<Photo>?): RecyclerView.Adapter<AlbumsViewHolder>() {
+   private class AlbumsAdapter(val albumFeed: MutableList<Album>, val photosFeed: MutableList<Photo>?, val userName: String): RecyclerView.Adapter<AlbumsViewHolder>() {
 
         //counts elements in array/list
         override fun getItemCount(): Int {
@@ -106,7 +107,7 @@ class AlbumsActivity : AppCompatActivity() {
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AlbumsViewHolder {
             val layoutInflater = LayoutInflater.from(p0.context)
             val customView = layoutInflater.inflate(R.layout.albums_list, p0, false)
-            return AlbumsViewHolder(customView, album = null, photosFeed = photosFeed) //TO DO fix album issue!!
+            return AlbumsViewHolder(customView, album = null, photosFeed = photosFeed, userName = userName)
         }
 
         override fun onBindViewHolder(p0: AlbumsViewHolder, p1: Int) {
@@ -128,22 +129,23 @@ class AlbumsActivity : AppCompatActivity() {
         }
     }
 
-    class AlbumsViewHolder(val albView: View, var album: Album? = null, var photosFeed: MutableList<Photo>?): RecyclerView.ViewHolder(albView) {
+    class AlbumsViewHolder(val albView: View, var album: Album? = null, var photosFeed: MutableList<Photo>?, val userName: String): RecyclerView.ViewHolder(albView) {
 
         companion object {
             val ALBUM_TITLE_KEY = "TITLE"
             val ALBUM_ID_KEY = "ALBUM_ID"
-            //val ALBUM_PHOTOS_KEY = "ALBUM_PHOTOS"
             val USER_NAME_KEY = "USER_NAME"
         }
 
         init {
+
             albView.setOnClickListener {
+
                 val intent = Intent(albView.context, GridActivity::class.java)
 
                 intent.putExtra(ALBUM_TITLE_KEY, album?.title)
                 intent.putExtra(ALBUM_ID_KEY, album?.id)
-                intent.putExtra(USER_NAME_KEY, intent.getStringExtra(CustomViewHolder.USER_NAME_KEY))
+                intent.putExtra(USER_NAME_KEY, userName)
 
                 albView.context.startActivity(intent)
             }

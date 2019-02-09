@@ -19,6 +19,9 @@ import java.io.IOException
 
 class GridActivity : AppCompatActivity() {
 
+    var userName = ""
+    var albumTitle = ""
+
     var photosToShow: MutableList<Photo> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +35,12 @@ class GridActivity : AppCompatActivity() {
         RecView.layoutManager = GridLayoutManager(this, 2)
 
         //change toolbar title
-        val toolbarTitle = intent.getStringExtra(AlbumsActivity.AlbumsViewHolder.ALBUM_TITLE_KEY)
+        albumTitle = intent.getStringExtra(AlbumsActivity.AlbumsViewHolder.ALBUM_TITLE_KEY)
+        val toolbarTitle = albumTitle
         supportActionBar?.title = toolbarTitle
         //add scroll effect!!
 
+        userName = intent.getStringExtra(AlbumsActivity.AlbumsViewHolder.USER_NAME_KEY)
         getPhotos()
     }
 
@@ -68,7 +73,7 @@ class GridActivity : AppCompatActivity() {
                     }
                 }
                 runOnUiThread {
-                    RecView.adapter = GridActivity.GridAdapter(photosToShow)
+                    RecView.adapter = GridActivity.GridAdapter(photosToShow, userName = userName, albumTitle = albumTitle)
                 }
             }
 
@@ -78,7 +83,7 @@ class GridActivity : AppCompatActivity() {
         })
     }
 
-    private class GridAdapter (val photosToShow: MutableList<Photo>): RecyclerView.Adapter<GridViewHolder>() {
+    private class GridAdapter (val photosToShow: MutableList<Photo>, val userName: String, val albumTitle: String): RecyclerView.Adapter<GridViewHolder>() {
 
         override fun getItemCount(): Int {
             return photosToShow.count()
@@ -87,7 +92,7 @@ class GridActivity : AppCompatActivity() {
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): GridViewHolder {
             val layoutInflater = LayoutInflater.from(p0.context)
             val customView = layoutInflater.inflate(R.layout.grid_layout, p0, false)
-            return GridActivity.GridViewHolder(customView, photo = null)
+            return GridActivity.GridViewHolder(customView, photo = null, userName = userName, albumTitle = albumTitle)
         }
 
         override fun onBindViewHolder(p0: GridViewHolder, p1: Int) {
@@ -98,7 +103,7 @@ class GridActivity : AppCompatActivity() {
         }
     }
 
-    class GridViewHolder(itemView: View, var photo: Photo?) : RecyclerView.ViewHolder(itemView) {
+    class GridViewHolder(itemView: View, var photo: Photo?, val userName: String, val albumTitle: String) : RecyclerView.ViewHolder(itemView) {
         companion object {
             val ALBUM_TITLE_KEY = "TITLE"
             val IMAGE_TITLE_KEY = "IMAGE_TITLE"
@@ -110,10 +115,10 @@ class GridActivity : AppCompatActivity() {
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, PhotoActivity::class.java)
 
-                intent.putExtra(GridActivity.GridViewHolder.ALBUM_TITLE_KEY, intent.getStringExtra(AlbumsActivity.AlbumsViewHolder.ALBUM_TITLE_KEY))
+                intent.putExtra(GridActivity.GridViewHolder.ALBUM_TITLE_KEY, albumTitle)
+                intent.putExtra(GridActivity.GridViewHolder.USER_NAME_KEY, userName)
                 intent.putExtra(GridActivity.GridViewHolder.IMAGE_TITLE_KEY, photo?.title)
                 intent.putExtra (GridActivity.GridViewHolder.ALBUM_PHOTO_URL_KEY, photo?.url)
-                intent.putExtra(GridActivity.GridViewHolder.USER_NAME_KEY, intent.getStringExtra(AlbumsActivity.AlbumsViewHolder.USER_NAME_KEY))
 
                 itemView.context.startActivity(intent)
             }
